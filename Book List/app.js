@@ -32,8 +32,7 @@ UI.prototype.clearFields = () => {
 UI.prototype.showAlert = (msg, className) => {
   const div = document.createElement('div');
   div.className = `alert ${className}`;
-  div.innerText = msg;
-  // div.appendChild(document.createTextNode(msg));
+  div.appendChild(document.createTextNode(msg));
 
   const container = document.querySelector('.container');
   const form = document.querySelector('#book-form');
