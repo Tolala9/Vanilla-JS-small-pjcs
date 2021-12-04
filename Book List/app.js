@@ -13,6 +13,7 @@ function UI() {
 UI.prototype.addBookToList = (book) => {
   const list = document.getElementById('book-list');
   const row = document.createElement('tr');
+
   row.innerHTML = `
     <td>${book.title}</td>
     <td>${book.author}</td>
@@ -23,24 +24,55 @@ UI.prototype.addBookToList = (book) => {
 }
 
 UI.prototype.clearFields = () => {
-    document.getElementById('title').value = '',
+  document.getElementById('title').value = '',
     document.getElementById('isbn').value = '',
     document.getElementById('author').value = '';
 }
 
+UI.prototype.showAlert = (msg, className) => {
+  const div = document.createElement('div');
+  div.className = `alert ${className}`;
+  div.innerText = msg;
+  // div.appendChild(document.createTextNode(msg));
+
+  const container = document.querySelector('.container');
+  const form = document.querySelector('#book-form');
+  container.insertBefore(div, form);
+
+  setTimeout(() => {
+    document.querySelector('.alert').remove();
+  }, 3000);
+
+}
+
+UI.prototype.deleteElement = (element) => {
+  if (element.className === 'delete') {
+    element.parentElement.parentElement.remove();
+  }
+}
+
 document.getElementById('book-form').addEventListener('submit', (e) => {
   const title = document.getElementById('title').value,
-        isbn = document.getElementById('isbn').value,
-        author = document.getElementById('author').value;
+    isbn = document.getElementById('isbn').value,
+    author = document.getElementById('author').value;
 
+  const book = new Book(title, author, isbn);
+  const ui = new UI();
 
-const book = new Book(title, author, isbn);
+  if (title === '') {
+    ui.showAlert('Please add the title', 'error');
+  } else {
+    ui.addBookToList(book);
+    ui.showAlert('The book has been added', 'success');
+  }
+  ui.clearFields();
 
-const ui = new UI();
+  e.preventDefault();
+});
 
-ui.addBookToList(book);
-ui.clearFields();
-
-
+document.querySelector('#book-list').addEventListener('click', (e) => {
+  const ui = new UI();
+  ui.deleteElement(e.target);
+  ui.showAlert('The book has been deleted', 'success');
   e.preventDefault();
 });
